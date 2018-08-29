@@ -59,10 +59,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define GPRS4G_TX_Pin GPIO_PIN_10
-#define GPRS4G_TX_GPIO_Port GPIOC
-#define GPRS4G_RX_Pin GPIO_PIN_11
-#define GPRS4G_RX_GPIO_Port GPIOC
+#define GPRS4G_PWR_Pin GPIO_PIN_5
+#define GPRS4G_PWR_GPIO_Port GPIOD
+#define GPRS4G_ON_Pin GPIO_PIN_6
+#define GPRS4G_ON_GPIO_Port GPIOD
 
 /* ########################## Assert Selection ############################## */
 /**

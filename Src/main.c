@@ -57,6 +57,7 @@
 /* USER CODE BEGIN Includes */
 #include "debug.h"
 #include "stdint.h"
+#include "gprs.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -68,6 +69,7 @@ static osTimerId defTimerId = NULL;
 static osMutexId defMutexId = NULL;
 static osPoolId defPoolId = NULL;
 static osMessageQId defMessageQId = NULL;
+extern UART_HandleTypeDef huart4;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,46 +90,69 @@ static void defTimerProc(void const *argument)
 		*p = i;
 		status = osMessagePut(defMessageQId, (uint32_t)p, 100);
 		if(status == osOK){
-			RTT_LOG(APP_DEBUG"put message %x\t%u\t%u\r\n", p, *p, osKernelSysTick());		
+			//RTT_LOG(APP_DEBUG"put message %x\t%u\t%u\r\n", p, *p, osKernelSysTick());		
 		}else{
 			osPoolFree(defPoolId, p);
 		}
 
 	}else{
-		RTT_LOG(APP_DEBUG"alloc memory failed\r\n");		
+		//RTT_LOG(APP_DEBUG"alloc memory failed\r\n");		
 	}
-	RTT_LOG(APP_WARNING"%d\r\n", i);
 }
+uint8_t tx_msg[512] = {'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '\0'};
+ 
 static void defTaskThread(void const *argument)
 {
 	static uint32_t waitMS = 30;
 	uint32_t waitingCount = 0;
 	osEvent event;
+	 uint8_t srv_ip[4] = {116, 85, 12, 46};
 	osTimerDef(defTimer, defTimerProc);
 	osMutexDef(defMutex);
 	osPoolDef(defPool, 10, sizeof(uint32_t));
 	osMessageQDef(defMessageQ, 10, sizeof(uint32_t));
+	
+	M26_init(&huart4);
+	M26_socket(0, TCP, 0, 0);
+	M26_connect(0, srv_ip, 6789);
+	osDelay(1000);
   	defTimerId = osTimerCreate(osTimer(defTimer), osTimerPeriodic, NULL);
 	defMutexId = osMutexCreate(osMutex(defMutex));
 	defPoolId = osPoolCreate(osPool(defPool));
 	defMessageQId = osMessageCreate(osMessageQ(defMessageQ), NULL);
-	osTimerStart(defTimerId, 20);
+	osTimerStart(defTimerId, 2000);
 	for(;;){
 		event = osMessageGet(defMessageQId, 0xffff);
 		waitingCount = osMessageWaiting(defMessageQId);
 		if(event.status == osEventMessage){
 			osPoolFree(defPoolId, event.value.p);
+			sprintf(tx_msg, "get message %x\t%u waiting:%u\r\n", event.value.p, *(uint32_t *)event.value.p, waitingCount);
+			M26_send(0, tx_msg, strlen(tx_msg));
+			osDelay(50);
+			M26_recv(0, tx_msg, sizeof(tx_msg));
 			RTT_LOG(APP_INFO"get message %x\t%u waiting:%u\r\n", event.value.p, *(uint32_t *)event.value.p, waitingCount);
+			if(waitingCount == 5){
+				osDelay(100);
+				M26_ioctl(IO_GET_CSQ, NULL);
+			}
 			if(waitingCount > 5){
-				waitMS = 10;
+				waitMS = 1000;
 			}else{
-				waitMS = 50;
+				waitMS = 5000;
 			}
 		}
 		osDelay(waitMS);
 		osThreadYield();	
 	}
 }
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if((uint32_t )huart == (uint32_t )&huart4){
+		//RTT_LOG(APP_NOTICE"uart send complete\r\n");
+	}
+}
+
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -168,6 +193,7 @@ int main(void)
   MX_GPIO_Init();
   MX_RTC_Init();
   MX_UART4_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	RTT_LOG(APP_DEBUG"start\r\n");
   osThreadDef(defTask, defTaskThread, 0, 0, 128);
