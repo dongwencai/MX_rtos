@@ -78,6 +78,7 @@ void MX_FREERTOS_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+uint8_t tx_msg[512];
 
 static void defTimerProc(void const *argument)
 {
@@ -90,6 +91,8 @@ static void defTimerProc(void const *argument)
 		*p = i;
 		status = osMessagePut(defMessageQId, (uint32_t)p, 100);
 		if(status == osOK){
+			//sprintf(tx_msg, "put message %x\t%u\t%u\r\n", p, *p, osKernelSysTick());
+			
 			//RTT_LOG(APP_DEBUG"put message %x\t%u\t%u\r\n", p, *p, osKernelSysTick());		
 		}else{
 			osPoolFree(defPoolId, p);
@@ -99,22 +102,30 @@ static void defTimerProc(void const *argument)
 		//RTT_LOG(APP_DEBUG"alloc memory failed\r\n");		
 	}
 }
-uint8_t tx_msg[512] = {'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '\0'};
+
  
 static void defTaskThread(void const *argument)
 {
 	static uint32_t waitMS = 30;
+	uint16_t len;
 	uint32_t waitingCount = 0;
 	osEvent event;
-	 uint8_t srv_ip[4] = {116, 85, 12, 46};
+	uint8_t srv1_ip[4] = {116, 85, 12, 46};
+	uint8_t srv2_ip[4] = {116, 85, 12, 46};
+	//uint8_t srv2_ip[4] = {172, 18, 252, 187};
 	osTimerDef(defTimer, defTimerProc);
 	osMutexDef(defMutex);
 	osPoolDef(defPool, 10, sizeof(uint32_t));
 	osMessageQDef(defMessageQ, 10, sizeof(uint32_t));
-	
+	uint16_t size = 0;
+	sscanf("xxx", "%d", &size);
+	RTT_LOG(APP_WARNING"size :%d\r\n", size);
 	M26_init(&huart4);
+	M26_reset();
 	M26_socket(0, TCP, 0, 0);
-	M26_connect(0, srv_ip, 6789);
+	M26_connect(0, srv1_ip, 6789);
+	M26_socket(1, TCP, 0, 0);
+	M26_connect(1, srv2_ip, 6789);
 	osDelay(1000);
   	defTimerId = osTimerCreate(osTimer(defTimer), osTimerPeriodic, NULL);
 	defMutexId = osMutexCreate(osMutex(defMutex));
@@ -126,11 +137,20 @@ static void defTaskThread(void const *argument)
 		waitingCount = osMessageWaiting(defMessageQId);
 		if(event.status == osEventMessage){
 			osPoolFree(defPoolId, event.value.p);
-			sprintf(tx_msg, "get message %x\t%u waiting:%u\r\n", event.value.p, *(uint32_t *)event.value.p, waitingCount);
+			sprintf(tx_msg, "%s", "i am sn0\r\n");
 			M26_send(0, tx_msg, strlen(tx_msg));
 			osDelay(50);
-			M26_recv(0, tx_msg, sizeof(tx_msg));
-			RTT_LOG(APP_INFO"get message %x\t%u waiting:%u\r\n", event.value.p, *(uint32_t *)event.value.p, waitingCount);
+			sprintf(tx_msg, "%s", "i am sn1\r\n");
+			M26_send(1, tx_msg, strlen(tx_msg));
+			osDelay(50);
+			if((len = M26_recv(0, tx_msg, 512)) > 0){
+				RTT_LOG(APP_WARNING"sn0 %s", tx_msg);
+			}
+			osDelay(50);
+			if((len = M26_recv(1, tx_msg, 512)) > 0){
+				RTT_LOG(APP_NOTICE"sn1 %s", tx_msg);
+			}
+			//RTT_LOG(APP_INFO"get message %x\t%u waiting:%u\r\n", event.value.p, *(uint32_t *)event.value.p, waitingCount);
 			if(waitingCount == 5){
 				osDelay(100);
 				M26_ioctl(IO_GET_CSQ, NULL);
@@ -146,12 +166,7 @@ static void defTaskThread(void const *argument)
 	}
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if((uint32_t )huart == (uint32_t )&huart4){
-		//RTT_LOG(APP_NOTICE"uart send complete\r\n");
-	}
-}
+
 
 /* USER CODE END PFP */
 

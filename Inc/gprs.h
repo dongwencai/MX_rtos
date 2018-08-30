@@ -26,13 +26,17 @@
 #define M26_ERR -1
 #define M26_TIMEOUT -2
 
+#define SOCKET_INIT 0
+#define SOCKET_CONNECTED 1
+
 #define SOCKNUM_CHECK(sn)   \
 	   do{					  \
 		  if(sn > MAX_SOCKNUM) return SOCKERR_SOCKNUM;	\
 	   }while(0)
 
 extern void M26_reboot();
-extern 	int8_t M26_init(UART_HandleTypeDef *huart);	  
+extern int8_t M26_init(UART_HandleTypeDef *huart);
+extern 	int8_t M26_reset();	  
 extern int8_t M26_socket(uint8_t sn, uint8_t protocol, uint16_t port, uint8_t flag);
 extern int8_t M26_connect(uint8_t sn, uint8_t *addr, uint16_t port);
 extern int8_t M26_ioctl(int cmd, void *param);
