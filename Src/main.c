@@ -153,7 +153,8 @@ static void defTaskThread(void const *argument)
 			//RTT_LOG(APP_INFO"get message %x\t%u waiting:%u\r\n", event.value.p, *(uint32_t *)event.value.p, waitingCount);
 			if(waitingCount == 5){
 				osDelay(100);
-				M26_ioctl(IO_GET_CSQ, NULL);
+				//M26_ioctl(IO_GET_CSQ, NULL);
+				M26_ioctl(IO_GET_STATUS, NULL);
 			}
 			if(waitingCount > 5){
 				waitMS = 1000;

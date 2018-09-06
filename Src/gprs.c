@@ -36,7 +36,7 @@ static uint8_t at_cmd_send(char *cmd, ...)
 	char *arg;
 	va_list ap;
 	va_start(ap, cmd);
-	if(strstr(cmd, "AT") != NULL){
+	if(strstr(cmd, "AT") == cmd){
 		strcpy(cmd_str, cmd);
 	}else{
 		strcat(cmd_str, cmd);
@@ -65,11 +65,14 @@ static uint8_t at_cmd_send(char *cmd, ...)
 }
 static uint8_t at_cmd_resp_check(char *cmd, char *expect, uint32_t timeout)
 {
+	uint16_t minLength = 0;
 	uint32_t timeout_systick = osKernelSysTick() + timeout;
+	sscanf(expect, "%d", &minLength);
+	minLength = minLength ? minLength : strlen(expect);
 	while(true){
 		osDelay(20);
 
-		if((M26_BUF_SIZE - puart->RxXferCount) > strlen(expect)){
+		if((M26_BUF_SIZE - puart->RxXferCount) > minLength){
 			if(strstr(at_result, expect) != NULL){
 				//RTT_LOG(APP_INFO"cmd:%s %s\r\n", cmd, at_result);
 				return M26_OK;
@@ -189,6 +192,11 @@ int8_t M26_ioctl(int cmd, void *param)
 		case IO_GET_CSQ:
 			at_cmd_send("CSQ", VA_PARAM_END);
 			return at_cmd_resp_check("CSQ", "OK", 1000);
+		case IO_GET_STATUS:
+			at_cmd_send("QISTATE", VA_PARAM_END);
+			at_cmd_resp_check("QISTATE", "20", 1000);
+			RTT_LOG(APP_NOTICE"%s\r\n", at_result);
+			return 0;
 	}
 }
 

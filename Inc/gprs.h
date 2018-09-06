@@ -21,6 +21,8 @@
 
 #define IO_SET_DNSIP 	1
 #define IO_GET_CSQ 		2	
+#define IO_GET_STATUS 	3	
+
 
 #define M26_OK 0
 #define M26_ERR -1
