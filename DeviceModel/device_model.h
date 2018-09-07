@@ -13,6 +13,7 @@ enum dataEnumType{
 	Decimal = 1,
 	Integer = 2,
 	DataTime = 3,
+	Boolean = 4,
 };
 
 typedef struct{
