@@ -1,6 +1,6 @@
-#include "component.t"
+#include "component.h"
 static char EnabledAttributeValue[16];
-static variableAttribute_t TiltSensorEnabledVariablesAttribute[] = {
+static variableAttribute_t TiltSensorEnabledVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = EnabledAttributeValue,
@@ -9,8 +9,8 @@ static variableAttribute_t TiltSensorEnabledVariablesAttribute[] = {
 	},
 	{0,}
 };
-static char ActiveAttributeValue[16];
-static variableAttribute_t TiltSensorActiveVariablesAttribute[] = {
+static char ActiveAttributeValue[16] = "false";
+static variableAttribute_t TiltSensorActiveVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = EnabledAttributeValue,
@@ -32,7 +32,7 @@ static variableCharacteristics_t TiltSensorEnabledVariableCharactersitics = {
 };
 static variableCharacteristics_t TiltSensorActiveVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = Boolean,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -44,21 +44,21 @@ static variable_t TiltSensorVariables[] = {
 	{
 		.variableName = "Enabled",
 		.variableInstance = "0",
-		.variableAttributes = &TiltSensorEnabledVariablesAttribute,
+		.variableAttributes = &TiltSensorEnabledVariablesAttributes,
 		.variableCharactersitics = &TiltSensorEnabledVariableCharactersitics,
 	},
 	{
 		.variableName = "Active",
 		.variableInstance = "0",
-		.variableAttributes = &TiltSensorActiveVariablesAttribute,
+		.variableAttributes = &TiltSensorActiveVariablesAttributes,
 		.variableCharactersitics = &TiltSensorActiveVariableCharactersitics,
 	},
-}
+};
 
-component_t TiltSensor = {
+component_t tiltSensor = {
 	.componentName = "TiltSensor",
 	.componentInstance = "0",
 	.connector = 0,
 	.variables = &TiltSensorVariables,
 	
-}
+};

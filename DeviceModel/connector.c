@@ -1,16 +1,16 @@
 #include "component.t"
 static char EnabledAttributeValue[16];
-static variableAttribute_t connectorEnabledVariablesAttribute[] = {
+static variableAttribute_t connectorEnabledVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = EnabledAttributeValue,
-		.mutability = True;
+		.mutability = true;
 		.persistence = false;
 	},
 	{0,}
 };
 static char ProblemAttributeValue[16];
-static variableAttribute_t connectorProblemVariablesAttribute[] = {
+static variableAttribute_t connectorProblemVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ProblemAttributeValue,
@@ -20,7 +20,7 @@ static variableAttribute_t connectorProblemVariablesAttribute[] = {
 	{0,}
 };
 static char TrippedAttributeValue[16];
-static variableAttribute_t connectorTrippedVariablesAttribute[] = {
+static variableAttribute_t connectorTrippedVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = TrippedAttributeValue,
@@ -30,18 +30,15 @@ static variableAttribute_t connectorTrippedVariablesAttribute[] = {
 	{0,}
 };
 static char PowerLimitAttributeValue[16];
-static variableAttribute_t connectorPowerLimitVariablesAttribute[] = {
+static variableAttribute_t connectorPowerLimitVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ProblemAttributeValue,
-		.mutability = True;
+		.mutability = true;
 		.persistence = false;
 	},
 	{0,}
 };
-
-
-
 
 static variableCharacteristics_t connectorEnabledVariableCharactersitics = {
 	.units = "",
@@ -73,40 +70,40 @@ static variableCharacteristics_t connectorPowerLimitVariableCharactersitics = {
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = True;
+	.supportsMonitoring = true;
 };
 
 static variable_t connectorVariables[] = {
 	{
 		.variableName = "Enabled",
 		.variableInstance = "0",
-		.variableAttributes = &connectorEnabledVariablesAttribute,
+		.variableAttributes = &connectorEnabledVariablesAttributes,
 		.variableCharactersitics = &connectorEnabledVariableCharactersitics,
 	},
 	{
 		.variableName = "Problem",
 		.variableInstance = "0",
-		.variableAttributes = &connectorProblemVariablesAttribute,
+		.variableAttributes = &connectorProblemVariablesAttributes,
 		.variableCharactersitics = &connectorProblemVariableCharactersitics,
 	},
 		{
 		.variableName = "Tripped",
 		.variableInstance = "0",
-		.variableAttributes = &connectorTrippedVariablesAttribute,
+		.variableAttributes = &connectorTrippedVariablesAttributes,
 		.variableCharactersitics = &connectorTrippedVariableCharactersitics,
 	},
 		{
 		.variableName = "PowerLimit",
 		.variableInstance = "0",
-		.variableAttributes = &connectorPowerLimitVariablesAttribute,
+		.variableAttributes = &connectorPowerLimitVariablesAttributes,
 		.variableCharactersitics = &connectorPowerLimitVariableCharactersitics,
 	},
 	
-}
+};
 component_t connector = {
 	.componentName = "connector",
 	.componentInstance = "0",
 	.connector = 0,
 	.variables = &connectorVariables,
 	
-}
+};

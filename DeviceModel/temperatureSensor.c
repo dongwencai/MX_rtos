@@ -1,16 +1,16 @@
-#include "component.t"
-static char EnabledAttributeValue[16];
-static variableAttribute_t TemperatureSensorEnabledVariablesAttribute[] = {
+#include "component.h"
+static char EnabledAttributeValue[8] = "true";
+static variableAttribute_t TemperatureSensorEnabledVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = EnabledAttributeValue,
 		.mutability = true;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
-static char EnabledAttributeValue[16];
-static variableAttribute_t TemperatureSensorTemperatureVariablesAttribute[] = {
+static char TemperatureAttributeValue[16];
+static variableAttribute_t TemperatureSensorTemperatureVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = TemperatureAttributeValue,
@@ -19,8 +19,8 @@ static variableAttribute_t TemperatureSensorTemperatureVariablesAttribute[] = {
 	},
 	{0,}
 };
-static char ActiveAttributeValue[16];
-static variableAttribute_t TemperatureSensorActiveVariablesAttribute[] = {
+static char ActiveAttributeValue[8];
+static variableAttribute_t TemperatureSensorActiveVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ActiveAttributeValue,
@@ -49,7 +49,7 @@ static variableCharacteristics_t TemperatureSensorTemperatureVariableCharactersi
 };
 static variableCharacteristics_t TemperatureSensorActiveVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = Boolean,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -59,27 +59,28 @@ static variable_t TemperatureSensorVariables[] = {
 	{
 		.variableName = "Enabled",
 		.variableInstance = "0",
-		.variableAttributes = &TemperatureSensorEnabledVariablesAttribute,
+		.variableAttributes = &TemperatureSensorEnabledVariablesAttributes,
 		.variableCharactersitics = &TemperatureSensorEnabledVariableCharactersitics,
-	},
-	{
-		.variableName = "Temperature",
-		.variableInstance = "0",
-		.variableAttributes = &TemperatureSensorTemperatureVariablesAttribute,
-		.variableCharactersitics = &TemperatureSensorTemperatureVariableCharactersitics,
 	},
 	{
 		.variableName = "Active",
 		.variableInstance = "0",
-		.variableAttributes = &TemperatureSensorActiveVariablesAttribute,
+		.variableAttributes = &TemperatureSensorActiveVariablesAttributes,
 		.variableCharactersitics = &TemperatureSensorActiveVariableCharactersitics,
 	},
-}
+	{
+		.variableName = "Temperature",
+		.variableInstance = "0",
+		.variableAttributes = &TemperatureSensorTemperatureVariablesAttributes,
+		.variableCharactersitics = &TemperatureSensorTemperatureVariableCharactersitics,
+	},
 
-component_t TemperatureSensor = {
+};
+
+component_t temperatureSensor = {
 	.componentName = "TemperatureSensor",
 	.componentInstance = "0",
 	.connector = 0,
 	.variables = &TemperatureSensorVariables,
 	
-}
+};

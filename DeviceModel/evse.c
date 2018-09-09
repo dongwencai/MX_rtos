@@ -1,16 +1,16 @@
-#include "component.t"
+#include "component.h"
 static char EnabledAttributeValue[16];
-static variableAttribute_t EVSEEnabledVariablesAttribute[] = {
+static variableAttribute_t EVSEEnabledVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = EnabledAttributeValue,
-		.mutability = ture;
-		.persistence = false;
+		.mutability = true;
+		.persistence = true;
 	},
 	{0,}
 };
 static char StateAttributeValue[16];
-static variableAttribute_t EVSEStateVariablesAttribute[] = {
+static variableAttribute_t EVSEProblemVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = StateAttributeValue,
@@ -21,7 +21,7 @@ static variableAttribute_t EVSEStateVariablesAttribute[] = {
 };
 
 static char TrippedAttributeValue[16];
-static variableAttribute_t EVSETrippedVariablesAttribute[] = {
+static variableAttribute_t EVSETrippedVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = TrippedAttributeValue,
@@ -31,7 +31,7 @@ static variableAttribute_t EVSETrippedVariablesAttribute[] = {
 	{0,}
 };
 static char ACVoltageAttributeValue[16];
-static variableAttribute_t EVSEACVoltageVariablesAttribute[] = {
+static variableAttribute_t EVSEACVoltageVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ACVoltageAttributeValue,
@@ -41,7 +41,7 @@ static variableAttribute_t EVSEACVoltageVariablesAttribute[] = {
 	{0,}
 };
 static char ACCurrentAttributeValue[16];
-static variableAttribute_t EVSEACCurrentVariablesAttribute[] = {
+static variableAttribute_t EVSEACCurrentVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ACCurrentAttributeValue,
@@ -51,7 +51,7 @@ static variableAttribute_t EVSEACCurrentVariablesAttribute[] = {
 	{0,}
 };
 static char DCVoltageAttributeValue[16];
-static variableAttribute_t EVSEDCVoltageVariablesAttribute[] = {
+static variableAttribute_t EVSEDCVoltageVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = DCVoltageAttributeValue,
@@ -61,7 +61,7 @@ static variableAttribute_t EVSEDCVoltageVariablesAttribute[] = {
 	{0,}
 };
 static char DCCurrentAttributeValue[16];
-static variableAttribute_t EVSEDCCurrentVariablesAttribute[] = {
+static variableAttribute_t EVSEDCCurrentVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = DCCurrentAttributeValue,
@@ -71,7 +71,7 @@ static variableAttribute_t EVSEDCCurrentVariablesAttribute[] = {
 	{0,}
 };
 static char ChargeProtocolAttributeValue[16];
-static variableAttribute_t EVSEChargeProtocolVariablesAttribute[] = {
+static variableAttribute_t EVSEChargeProtocolVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ChargeProtocolAttributeValue,
@@ -91,9 +91,9 @@ static variableCharacteristics_t EVSEEnabledVariableCharactersitics = {
 	.valuesList = NULL,
 	.supportsMonitoring = true;
 };
-static variableCharacteristics_t EVSEStateVariableCharactersitics = {
+static variableCharacteristics_t EVSEProblemVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = Boolean,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -101,14 +101,14 @@ static variableCharacteristics_t EVSEStateVariableCharactersitics = {
 };
 static variableCharacteristics_t EVSETrippedCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = OptionList,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 static variableCharacteristics_t EVSEACVoltageVariableCharactersitics = {
-	.units = "",
+	.units = "V",
 	.dataType = Integer,
 	.minLimit = 0,
 	.maxLimit = 0,
@@ -116,7 +116,7 @@ static variableCharacteristics_t EVSEACVoltageVariableCharactersitics = {
 	.supportsMonitoring = false;
 };
 static variableCharacteristics_t EVSEACCurrentVariableCharactersitics = {
-	.units = "",
+	.units = "mA",
 	.dataType = Integer,
 	.minLimit = 0,
 	.maxLimit = 0,
@@ -124,7 +124,7 @@ static variableCharacteristics_t EVSEACCurrentVariableCharactersitics = {
 	.supportsMonitoring = false;
 };
 static variableCharacteristics_t EVSEDCVoltageVariableCharactersitics = {
-	.units = "",
+	.units = "V",
 	.dataType = Integer,
 	.minLimit = 0,
 	.maxLimit = 0,
@@ -141,7 +141,7 @@ static variableCharacteristics_t EVSEDCCurrentVariableCharactersitics = {
 };
 static variableCharacteristics_t EVSEChargeProtocolVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = OptionList,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -152,57 +152,56 @@ static variable_t EVSEVariables[] = {
 	{
 		.variableName = "Enabled",
 		.variableInstance = "0",
-		.variableAttributes = &ClockEnabledVariablesAttribute,
+		.variableAttributes = &EVSEEnabledVariablesAttributes,
 		.variableCharactersitics = &EVSEEnabledVariableCharactersitics,
 	},
 	{
-		.variableName = "State",
+		.variableName = "Problem",
 		.variableInstance = "0",
-		.variableAttributes = &EVSEStateVariablesAttribute,
-		.variableCharactersitics = &EVSEStateVariableCharactersitics,
+		.variableAttributes = &EVSEProblemVariablesAttributes,
+		.variableCharactersitics = &EVSEProblemVariableCharactersitics,
 	},
 	{
 		.variableName = "Tripped",
 		.variableInstance = "0",
-		.variableAttributes = &EVSETrippedAttribute,
+		.variableAttributes = &EVSETrippedVariablesAttributes,
 		.variableCharactersitics = &EVSETrippedCharactersitics,
 	},
 	{
 		.variableName = "ACVoltage",
 		.variableInstance = "0",
-		.variableAttributes = &EVSEACVoltageVariablesAttribute,
+		.variableAttributes = &EVSEACVoltageVariablesAttributes,
 		.variableCharactersitics = &EVSEACVoltageVariableCharactersitics,
 	},
 	{
 		.variableName = "ACCurrent",
 		.variableInstance = "0",
-		.variableAttributes = &EVSEACCurrentVariablesAttribute,
+		.variableAttributes = &EVSEACCurrentVariablesAttributes,
 		.variableCharactersitics = &EVSEACCurrentVariableCharactersitics,
 	},
 	{
 		.variableName = "DCVoltage",
 		.variableInstance = "0",
-		.variableAttributes = &EVSEDCVoltageVariablesAttribute,
+		.variableAttributes = &EVSEDCVoltageVariablesAttributes,
 		.variableCharactersitics = &EVSEDCVoltageVariableCharactersitics,
 	},
 		{
 		.variableName = "DCCurrent",
 		.variableInstance = "0",
-		.variableAttributes = &EVSEDCCurrentVariablesAttribute,
+		.variableAttributes = &EVSEDCCurrentVariablesAttributes,
 		.variableCharactersitics = &EVSEDCCurrentVariableCharactersitics,
 	},
 		{
 		.variableName = "ChargeProtocol",
 		.variableInstance = "0",
-		.variableAttributes = &EVSEChargeProtocolVariablesAttribute,
+		.variableAttributes = &EVSEChargeProtocolVariablesAttributes,
 		.variableCharactersitics = &EVSEChargeProtocolVariableCharactersitics,
 	},
-}
+};
 
 component_t EVSE = {
 	.componentName = "EVSE",
 	.componentInstance = "0",
 	.connector = 0,
 	.variables = &EVSEVariables,
-	
-}
+};

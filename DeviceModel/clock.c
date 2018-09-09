@@ -1,6 +1,6 @@
-#include "component.t"
-static char ActiveAttributeValue[16];
-static variableAttribute_t ClockActiveVariablesAttribute[] = {
+#include "component.h"
+static char ActiveAttributeValue[8] = "true";
+static variableAttribute_t ClockActiveVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ActiveAttributeValue,
@@ -10,7 +10,7 @@ static variableAttribute_t ClockActiveVariablesAttribute[] = {
 	{0,}
 };
 static char SystemTicksAttributeValue[16];
-static variableAttribute_t ClockSystemTicksVariablesAttribute[] = {
+static variableAttribute_t ClockSystemTicksVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = SystemTicksAttributeValue,
@@ -21,7 +21,7 @@ static variableAttribute_t ClockSystemTicksVariablesAttribute[] = {
 };
 
 static char TimeAttributeValue[16];
-static variableAttribute_t ClockTimeVariablesAttribute[] = {
+static variableAttribute_t ClockTimeVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = TimeAttributeValue,
@@ -31,32 +31,23 @@ static variableAttribute_t ClockTimeVariablesAttribute[] = {
 	{0,}
 };
 static char TimeOffsetAttributeValue[16];
-static variableAttribute_t ClockTimeOffsetVariablesAttribute[] = {
+static variableAttribute_t ClockTimeOffsetVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = TimeOffsetAttributeValue,
 		.mutability = true;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
-static char TimeSourceAttributeValue[16];
-static variableAttribute_t ClockTimeSourceVariablesAttribute[] = {
-	{
-		.attributeType = Actual,
-		.attributeValue = TimeSourceAttributeValue,
-		.mutability = true;
-		.persistence = false;
-	},
-	{0,}
-};
+
 static char NtpServerUriAttributeValue[16];
-static variableAttribute_t ClockNtpServerUriVariablesAttribute[] = {
+static variableAttribute_t ClockNtpServerUriVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = NtpServerUriAttributeValue,
 		.mutability = true;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
@@ -71,8 +62,8 @@ static variableCharacteristics_t ClockActiveVariableCharactersitics = {
 	.supportsMonitoring = false;
 };
 static variableCharacteristics_t ClockSystemTicksVariableCharactersitics = {
-	.units = "",
-	.dataType = MemberList,
+	.units = "Ticks",
+	.dataType = Integer,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -80,7 +71,7 @@ static variableCharacteristics_t ClockSystemTicksVariableCharactersitics = {
 };
 static variableCharacteristics_t ClockTimeVariableCharactersitics = {
 	.units = "",
-	.dataType = Boolean,
+	.dataType = DateTime,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -88,23 +79,16 @@ static variableCharacteristics_t ClockTimeVariableCharactersitics = {
 };
 static variableCharacteristics_t ClockTimeOffsetVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = Integer,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
 	.supportsMonitoring = false;
 };
-static variableCharacteristics_t ClockTimeSourceVariableCharactersitics = {
-	.units = "",
-	.dataType = Boolean,
-	.minLimit = 0,
-	.maxLimit = 0,
-	.valuesList = NULL,
-	.supportsMonitoring = false;
-};
+
 static variableCharacteristics_t ClockNtpServerUriVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = String,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -115,45 +99,39 @@ static variable_t ClockVariables[] = {
 	{
 		.variableName = "Active",
 		.variableInstance = "0",
-		.variableAttributes = &ClockActiveVariablesAttribute,
+		.variableAttributes = &ClockActiveVariablesAttributes,
 		.variableCharactersitics = &ClockActiveVariableCharactersitics,
 	},
 	{
 		.variableName = "SystemTicks",
 		.variableInstance = "0",
-		.variableAttributes = &ClockSystemTicksVariablesAttribute,
+		.variableAttributes = &ClockSystemTicksVariablesAttributes,
 		.variableCharactersitics = &ClockSystemTicksVariableCharactersitics,
 	},
 	{
 		.variableName = "Time",
 		.variableInstance = "0",
-		.variableAttributes = &ClockVariablesAttribute,
-		.variableCharactersitics = &ClockVariableCharactersitics,
+		.variableAttributes = &ClockTimeVariablesAttributes,
+		.variableCharactersitics = &ClockTimeVariableCharactersitics,
 	},
 	{
 		.variableName = "TimeOffset",
 		.variableInstance = "0",
-		.variableAttributes = &ClockTimeOffsetVariablesAttribute,
+		.variableAttributes = &ClockTimeOffsetVariablesAttributes,
 		.variableCharactersitics = &ClockTimeOffsetVariableCharactersitics,
-	},
-	{
-		.variableName = "TimeSource",
-		.variableInstance = "0",
-		.variableAttributes = &ClockTimeSourceVariablesAttribute,
-		.variableCharactersitics = &ClockTimeSourceVariableCharactersitics,
 	},
 	{
 		.variableName = "NtpServerUri",
 		.variableInstance = "0",
-		.variableAttributes = &ClockNtpServerUriVariablesAttribute,
+		.variableAttributes = &ClockNtpServerUriVariablesAttributes,
 		.variableCharactersitics = &ClockNtpServerUriVariableCharactersitics,
 	},
-}
+};
 
-component_t Clock = {
+component_t clock = {
 	.componentName = "Clock",
 	.componentInstance = "0",
 	.connector = 0,
 	.variables = &ClockVariables,
 	
-}
+};

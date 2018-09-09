@@ -1,7 +1,7 @@
-#include "component.t"
+#include "component.h"
 
-static char activeAttributeValue[16];
-static variableAttribute_t controllerActiveVariablesAttribute[] = {
+static char activeAttributeValue[8] = "true";
+static variableAttribute_t controllerActiveVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = activeAttributeValue,
@@ -11,82 +11,80 @@ static variableAttribute_t controllerActiveVariablesAttribute[] = {
 	{0,}
 };
 
-static char intervalAttributeValue[16];
-static variableAttribute_t controllerIntervalVariablesAttribute[] = {
+static char intervalAttributeValue[8];
+static variableAttribute_t controllerIntervalVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = intervalAttributeValue,
-		.mutability = True;
-		.persistence = false;
+		.mutability = true;
+		.persistence = true;
 	},
 	{0,}
 };
 
-static char manufacturerAttributeValue[16];
-static variableAttribute_t controllerManufacturerVariablesAttribute[] = {
+static char manufacturerAttributeValue[32];
+static variableAttribute_t controllerManufacturerVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = manufacturerAttributeValue,
 		.mutability = false;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
 static char TypeAttributeValue[16];
-static variableAttribute_t controllerTypeVariablesAttribute[] = {
+static variableAttribute_t controllerTypeVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = TypeAttributeValue,
-		.mutability = True;
-		.persistence = false;
+		.mutability = true;
+		.persistence = true;
 	},
 	{0,}
 };
 static char SerialNumberAttributeValue[16];
-static variableAttribute_t controllerSerialNumberVariablesAttribute[] = {
+static variableAttribute_t controllerSerialNumberVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = SerialNumberAttributeValue,
-		.mutability = True;
-		.persistence = false;
+		.mutability = false;
+		.persistence = true;
 	},
 	{0,}
 };
 static char VersionNumberAttributeValue[16];
-static variableAttribute_t controllerVersionNumberVariablesAttribute[] = {
+static variableAttribute_t controllerVersionNumberVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = VersionNumberAttributeValue,
 		.mutability = false;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
 static char VersionDataAttributeValue[16];
-static variableAttribute_t controllerVersionDataVariablesAttribute[] = {
+static variableAttribute_t controllerVersionDateVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = VersionDataAttributeValue,
 		.mutability = false;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
 static char SQCodeAttributeValue[16];
-static variableAttribute_t controllerSQCodeVariablesAttribute[] = {
+static variableAttribute_t controllerSQCodeVariablesAttributses[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = SQCodeAttributeValue,
-		//.mutability = false;
-		.persistence = false;
+		.mutability = true;
+		.persistence = true;
 	},
 	{0,}
 };
 static variableCharacteristics_t controllerActiveVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
-	.minLimit = 0,
-	.maxLimit = 1,
+	.dataType = Boolean,
 	.valuesList = NULL,
 	.supportsMonitoring = false;
 };
@@ -110,7 +108,7 @@ static variableCharacteristics_t controllerManufacturerVariableCharactersitics =
 };
 static variableCharacteristics_t controllerTypeVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = OptionList,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -132,7 +130,7 @@ static variableCharacteristics_t controllerVersionNumberVariableCharactersitics 
 	.valuesList = NULL,
 	.supportsMonitoring = false;
 };
-static variableCharacteristics_t controllerVersionDataVariableCharactersitics = {
+static variableCharacteristics_t controllerVersionDateVariableCharactersitics = {
 	.units = "",
 	.dataType = DateTime,
 	.minLimit = 0,
@@ -146,60 +144,60 @@ static variableCharacteristics_t controllerSQCodeVariableCharactersitics = {
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = True;
+	.supportsMonitoring = true;
 };
 static variable_t controllerVariables[] = {
 	{
 		.variableName = "Active",
 		.variableInstance = "0",
-		.variableAttributes = &controllerActiveVariablesAttribute,
+		.variableAttributes = &controllerActiveVariablesAttributes,
 		.variableCharactersitics = &controllerActiveVariableCharactersitics,
 	},
 	{
 		.variableName = "Interval",
 		.variableInstance = "0",
-		.variableAttributes = &controllerIntervalVariablesAttribute,
+		.variableAttributes = &controllerIntervalVariablesAttributes,
 		.variableCharactersitics = &controllerIntervalVariableCharactersitics,
 	},
 	{
 		.variableName = "Manufacturer",
 		.variableInstance = "0",
-		.variableAttributes = &controllerManufacturerVariablesAttribute,
+		.variableAttributes = &controllerManufacturerVariablesAttributes,
 		.variableCharactersitics = &controllerManufacturerVariableCharactersitics,
 
-	}
+	},
 	{
 		.variableName = "Type",
 		.variableInstance = "0",
-		.variableAttributes = &controllerTypeVariablesAttribute,
+		.variableAttributes = &controllerTypeVariablesAttributes,
 		.variableCharactersitics = &controllerTypeVariableCharactersitics,
 		
-	}
+	},
 	{
 		.variableName = "SerialNumber",
 		.variableInstance = "0",
-		.variableAttributes = &controllerSerialNumberVariablesAttribute,
+		.variableAttributes = &controllerSerialNumberVariablesAttributes,
 		.variableCharactersitics = &controllerSerialNumberVariableCharactersitics,
 		
-	}
+	},
 	{
-		.variableName = "DateTime",
+		.variableName = "VersionDate",
 		.variableInstance = "0",
-		.variableAttributes = &controllerVersionDataVariablesAttribute,
-		.variableCharactersitics = &controllerVersionDataVariableCharactersitics,
+		.variableAttributes = &controllerVersionDateVariablesAttributes,
+		.variableCharactersitics = &controllerVersionDateVariableCharactersitics,
 		
-	}
+	},
 	{
 		.variableName = "VersionNumber",
 		.variableInstance = "0",
-		.variableAttributes = &controllerVersionNumberVariablesAttribute,
+		.variableAttributes = &controllerVersionNumberVariablesAttributes,
 		.variableCharactersitics = &controllerVersionNumberVariableCharactersitics,
 		
-	}
+	},
 	{
 		.variableName = "SQCode",
 		.variableInstance = "0",
-		.variableAttributes = &controllerSQCodeVariablesAttribute,
+		.variableAttributes = &controllerSQCodeVariablesAttributses,
 		.variableCharactersitics = &controllerSQCodeVariableCharactersitics,
 		
 	}
@@ -210,5 +208,5 @@ component_t controller = {
 	.connector = 0,
 	.variables = &controllerVariables,
 	
-}
+};
 

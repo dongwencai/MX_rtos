@@ -1,16 +1,16 @@
-#include "component.t"
-static char EnabledAttributeValue[16];
-static variableAttribute_t radiolinkEnabledVariablesAttribute[] = {
+#include "component.h"
+static char EnabledAttributeValue[8];
+static variableAttribute_t radiolinkEnabledVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = EnabledAttributeValue,
 		.mutability = true;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
-static char ActiveAttributeValue[16];
-static variableAttribute_t radiolinkActiveVariablesAttribute[] = {
+static char ActiveAttributeValue[8] = "true";
+static variableAttribute_t radiolinkActiveVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ActiveAttributeValue,
@@ -19,8 +19,8 @@ static variableAttribute_t radiolinkActiveVariablesAttribute[] = {
 	},
 	{0,}
 };
-static char IMSIAttributeValue[16];
-static variableAttribute_t radiolinkIMSIVariablesAttribute[] = {
+static char IMSIAttributeValue[32];
+static variableAttribute_t radiolinkIMSIVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = IMSIAttributeValue,
@@ -29,8 +29,8 @@ static variableAttribute_t radiolinkIMSIVariablesAttribute[] = {
 	},
 	{0,}
 };
-static char ICCIDAttributeValue[16];
-static variableAttribute_t radiolinkICCIDVariablesAttribute[] = {
+static char ICCIDAttributeValue[32];
+static variableAttribute_t radiolinkICCIDVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ICCIDAttributeValue,
@@ -40,7 +40,7 @@ static variableAttribute_t radiolinkICCIDVariablesAttribute[] = {
 	{0,}
 };
 static char IpAddressAttributeValue[16];
-static variableAttribute_t radiolinkIpAddressVariablesAttribute[] = {
+static variableAttribute_t radiolinkIpAddressVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = IpAddressAttributeValue,
@@ -50,27 +50,27 @@ static variableAttribute_t radiolinkIpAddressVariablesAttribute[] = {
 	{0,}
 };
 static char ServerIpAttributeValue[16];
-static variableAttribute_t radiolinkServerIpVariablesAttribute[] = {
+static variableAttribute_t radiolinkServerIpVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ServerIpAttributeValue,
 		.mutability = true;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
-static char ServerPortAttributeValue[16];
-static variableAttribute_t radiolinkServerPortVariablesAttribute[] = {
+static char ServerPortAttributeValue[8];
+static variableAttribute_t radiolinkServerPortVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ServerPortAttributeValue,
 		.mutability = true;
-		.persistence = false;
+		.persistence = true;
 	},
 	{0,}
 };
-static char ProblemAttributeValue[16];
-static variableAttribute_t radiolinkProblemVariablesAttribute[] = {
+static char ProblemAttributeValue[8] = "false";
+static variableAttribute_t radiolinkProblemVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = ProblemAttributeValue,
@@ -79,8 +79,8 @@ static variableAttribute_t radiolinkProblemVariablesAttribute[] = {
 	},
 	{0,}
 };
-static char WiredSignalStrengthAttributeValue[16];
-static variableAttribute_t radiolinkWiredSignalStrengthVariablesAttribute[] = {
+static char WiredSignalStrengthAttributeValue[8];
+static variableAttribute_t radiolinkWiredSignalStrengthVariablesAttributes[] = {
 	{
 		.attributeType = Actual,
 		.attributeValue = WiredSignalStrengthAttributeValue,
@@ -98,11 +98,11 @@ static variableCharacteristics_t radiolinkEnabledVariableCharactersitics = {
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 static variableCharacteristics_t radiolinkActiveVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = Boolean,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
@@ -130,7 +130,7 @@ static variableCharacteristics_t radiolinkIpAddressVariableCharactersitics = {
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 static variableCharacteristics_t radiolinkServerIpVariableCharactersitics = {
 	.units = "",
@@ -138,7 +138,7 @@ static variableCharacteristics_t radiolinkServerIpVariableCharactersitics = {
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 static variableCharacteristics_t radiolinkServerPortVariableCharactersitics = {
 	.units = "",
@@ -146,81 +146,81 @@ static variableCharacteristics_t radiolinkServerPortVariableCharactersitics = {
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 static variableCharacteristics_t radiolinkProblemVariableCharactersitics = {
 	.units = "",
-	.dataType = MemberList,
+	.dataType = Boolean,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 static variableCharacteristics_t radiolinkWiredSignalStrengthVariableCharactersitics = {
-	.units = "",
+	.units = "Percent",
 	.dataType = Integer,
 	.minLimit = 0,
 	.maxLimit = 0,
 	.valuesList = NULL,
-	.supportsMonitoring = true;
+	.supportsMonitoring = false;
 };
 
 static variable_t radiolinkVariables[] = {
 	{
 		.variableName = "Enabled",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkEnabledVariablesAttribute,
+		.variableAttributes = &radiolinkEnabledVariablesAttributes,
 		.variableCharactersitics = &radiolinkEnabledVariableCharactersitics,
 	},
 	{
 		.variableName = "Active",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkActiveVariablesAttribute,
+		.variableAttributes = &radiolinkActiveVariablesAttributes,
 		.variableCharactersitics = &radiolinkActiveVariableCharactersitics,
 	},
 	{
 		.variableName = "IMSI",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkIMSIVariablesAttribute,
+		.variableAttributes = &radiolinkIMSIVariablesAttributes,
 		.variableCharactersitics = &radiolinkIMSIVariableCharactersitics,
 	},
 	{
 		.variableName = "ICCID",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkICCIDVariablesAttribute,
+		.variableAttributes = &radiolinkICCIDVariablesAttributes,
 		.variableCharactersitics = &radiolinkICCIDVariableCharactersitics,
 	},
 	{
 		.variableName = "IpAddress",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkIpAddressVariablesAttribute,
+		.variableAttributes = &radiolinkIpAddressVariablesAttributes,
 		.variableCharactersitics = &radiolinkIpAddressVariableCharactersitics,
 	},
 	{
 		.variableName = "ServerIp",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkServerIpVariablesAttribute,
+		.variableAttributes = &radiolinkServerIpVariablesAttributes,
 		.variableCharactersitics = &radiolinkServerIpVariableCharactersitics,
 	},
 	{
 		.variableName = "ServerPort",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkServerPortVariablesAttribute,
+		.variableAttributes = &radiolinkServerPortVariablesAttributes,
 		.variableCharactersitics = &radiolinkServerPortVariableCharactersitics,
 	},
 	{
 		.variableName = "Problem",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkProblemVariablesAttribute,
+		.variableAttributes = &radiolinkProblemVariablesAttributes,
 		.variableCharactersitics = &radiolinkProblemVariableCharactersitics,
 	},
 	{
 		.variableName = "WiredSignalStrength",
 		.variableInstance = "0",
-		.variableAttributes = &radiolinkWiredSignalStrengthVariablesAttribute,
+		.variableAttributes = &radiolinkWiredSignalStrengthVariablesAttributes,
 		.variableCharactersitics = &radiolinkWiredSignalStrengthVariableCharactersitics,
 	},
-}
+};
 
 component_t radiolink = {
 	.componentName = "radiolink",
@@ -228,4 +228,4 @@ component_t radiolink = {
 	.connector = 0,
 	.variables = &radiolinkVariables,
 	
-}
+};
