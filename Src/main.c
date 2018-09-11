@@ -170,9 +170,9 @@ static void defTaskThread(void const *argument)
 	M26_init(&huart1);
 	osDelay(1000);
 
-	HAL_TIM_Base_Start(&htim4);
+	HAL_TIM_Base_Start(&htim1);
 	osDelay(1000);
-	HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_4);
+	HAL_TIM_IC_Start_IT(&htim4, TIM_CHANNEL_3);
 	HAL_ADC_Start(&hadc1);
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t *)mem, 14);
 	
@@ -183,7 +183,7 @@ static void defTaskThread(void const *argument)
 	M26_connect(1, srv2_ip, 6789);
 	osDelay(1000);
 	
-  	defTimerId = osTimerCreate(osTimer(defTimer), osTimerPeriodic, NULL);
+  defTimerId = osTimerCreate(osTimer(defTimer), osTimerPeriodic, NULL);
 	defMutexId = osMutexCreate(osMutex(defMutex));
 	defPoolId = osPoolCreate(osPool(defPool));
 	defMessageQId = osMessageCreate(osMessageQ(defMessageQ), NULL);
