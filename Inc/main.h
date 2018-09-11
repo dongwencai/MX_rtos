@@ -58,11 +58,58 @@
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
+#define ADC_NUMBER 14
 
-#define GPRS4G_PWR_Pin GPIO_PIN_5
-#define GPRS4G_PWR_GPIO_Port GPIOD
-#define GPRS4G_ON_Pin GPIO_PIN_6
-#define GPRS4G_ON_GPIO_Port GPIOD
+#define AC9_ADC_Pin GPIO_PIN_0
+#define AC9_ADC_GPIO_Port GPIOC
+#define AC10_ADC_Pin GPIO_PIN_1
+#define AC10_ADC_GPIO_Port GPIOC
+#define AC8_ADC_Pin GPIO_PIN_2
+#define AC8_ADC_GPIO_Port GPIOC
+#define AC7_ADC_Pin GPIO_PIN_3
+#define AC7_ADC_GPIO_Port GPIOC
+#define ACPE_VADC_Pin GPIO_PIN_0
+#define ACPE_VADC_GPIO_Port GPIOA
+#define ACL_VADC_Pin GPIO_PIN_1
+#define ACL_VADC_GPIO_Port GPIOA
+#define TOUCH_ADC_Pin GPIO_PIN_2
+#define TOUCH_ADC_GPIO_Port GPIOA
+#define AC6_ADC_Pin GPIO_PIN_6
+#define AC6_ADC_GPIO_Port GPIOA
+#define AC5_ADC_Pin GPIO_PIN_7
+#define AC5_ADC_GPIO_Port GPIOA
+#define AC4_ADC_Pin GPIO_PIN_4
+#define AC4_ADC_GPIO_Port GPIOC
+#define AC3_ADC_Pin GPIO_PIN_5
+#define AC3_ADC_GPIO_Port GPIOC
+#define AC2_ADC_Pin GPIO_PIN_0
+#define AC2_ADC_GPIO_Port GPIOB
+#define AC1_ADC_Pin GPIO_PIN_1
+#define AC1_ADC_GPIO_Port GPIOB
+#define Contactor10_Pin GPIO_PIN_8
+#define Contactor10_GPIO_Port GPIOD
+#define Contactor9_Pin GPIO_PIN_9
+#define Contactor9_GPIO_Port GPIOD
+#define Contactor8_Pin GPIO_PIN_10
+#define Contactor8_GPIO_Port GPIOD
+#define Contactor7_Pin GPIO_PIN_11
+#define Contactor7_GPIO_Port GPIOD
+#define Contactor6_Pin GPIO_PIN_12
+#define Contactor6_GPIO_Port GPIOD
+#define Contactor5_Pin GPIO_PIN_13
+#define Contactor5_GPIO_Port GPIOD
+#define Contactor4_Pin GPIO_PIN_14
+#define Contactor4_GPIO_Port GPIOD
+#define Contactor3_Pin GPIO_PIN_15
+#define Contactor3_GPIO_Port GPIOD
+#define Contactor2_Pin GPIO_PIN_6
+#define Contactor2_GPIO_Port GPIOC
+#define Contactor1_Pin GPIO_PIN_7
+#define Contactor1_GPIO_Port GPIOC
+#define GPRS4G_ON_Pin GPIO_PIN_8
+#define GPRS4G_ON_GPIO_Port GPIOA
+#define GPRS4G_PWR_Pin GPIO_PIN_12
+#define GPRS4G_PWR_GPIO_Port GPIOA
 
 /* ########################## Assert Selection ############################## */
 /**

@@ -50,7 +50,10 @@
 #include "main.h"
 #include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
+#include "adc.h"
+#include "dma.h"
 #include "rtc.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -103,7 +106,54 @@ static void defTimerProc(void const *argument)
 	}
 }
 
- 
+ struct {
+	uint8_t sw_no;
+	uint8_t status;
+ }rsw;
+ static void relay_check()
+{
+	 if(rsw.sw_no){
+		 switch(rsw.sw_no)
+		 {
+	 		case 1:
+				HAL_GPIO_WritePin(Contactor1_GPIO_Port, Contactor1_Pin, rsw.status);
+				break;
+			case 2:
+				HAL_GPIO_WritePin(Contactor2_GPIO_Port, Contactor2_Pin, rsw.status);
+				break;
+			case 3:
+				HAL_GPIO_WritePin(Contactor3_GPIO_Port, Contactor3_Pin, rsw.status);
+				break;
+					
+			 case 4:
+			 	HAL_GPIO_WritePin(Contactor4_GPIO_Port, Contactor4_Pin, rsw.status);
+				 break;
+			 case 5:
+			 	HAL_GPIO_WritePin(Contactor5_GPIO_Port, Contactor5_Pin, rsw.status);
+				 break;
+			 case 6:
+			 	HAL_GPIO_WritePin(Contactor6_GPIO_Port, Contactor6_Pin, rsw.status);
+				 break;
+				 
+			 case 7:
+			 	HAL_GPIO_WritePin(Contactor7_GPIO_Port, Contactor7_Pin, rsw.status);
+				 break;
+			 case 8:
+			 	HAL_GPIO_WritePin(Contactor8_GPIO_Port, Contactor8_Pin, rsw.status);
+				 break;
+			 case 9:
+			 	HAL_GPIO_WritePin(Contactor9_GPIO_Port, Contactor9_Pin, rsw.status);
+				 break;
+			case 10:
+				HAL_GPIO_WritePin(Contactor10_GPIO_Port, Contactor10_Pin, rsw.status);
+				break;
+		 }
+		 
+		 rsw.status = 0;
+		 rsw.sw_no = 0;
+	 }
+ }
+extern uint16_t mem[28];
 static void defTaskThread(void const *argument)
 {
 	static uint32_t waitMS = 30;
@@ -117,22 +167,30 @@ static void defTaskThread(void const *argument)
 	osMutexDef(defMutex);
 	osPoolDef(defPool, 10, sizeof(uint32_t));
 	osMessageQDef(defMessageQ, 10, sizeof(uint32_t));
-	uint16_t size = 0;
-	sscanf("xxx", "%d", &size);
-	RTT_LOG(APP_WARNING"size :%d\r\n", size);
-	M26_init(&huart4);
+	M26_init(&huart1);
+	osDelay(1000);
+
+	HAL_TIM_Base_Start(&htim4);
+	osDelay(1000);
+	HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_4);
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t *)mem, 14);
+	
 	M26_reset();
 	M26_socket(0, TCP, 0, 0);
 	M26_connect(0, srv1_ip, 6789);
 	M26_socket(1, TCP, 0, 0);
 	M26_connect(1, srv2_ip, 6789);
 	osDelay(1000);
+	
   	defTimerId = osTimerCreate(osTimer(defTimer), osTimerPeriodic, NULL);
 	defMutexId = osMutexCreate(osMutex(defMutex));
 	defPoolId = osPoolCreate(osPool(defPool));
 	defMessageQId = osMessageCreate(osMessageQ(defMessageQ), NULL);
 	osTimerStart(defTimerId, 2000);
 	for(;;){
+		relay_check();
+
 		event = osMessageGet(defMessageQId, 0xffff);
 		waitingCount = osMessageWaiting(defMessageQId);
 		if(event.status == osEventMessage){
@@ -207,9 +265,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_RTC_Init();
   MX_UART4_Init();
   MX_USART1_UART_Init();
+  MX_ADC1_Init();
+  MX_TIM1_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 	RTT_LOG(APP_DEBUG"start\r\n");
   osThreadDef(defTask, defTaskThread, 0, 0, 128);
@@ -282,8 +344,9 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_ADC;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
